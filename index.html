@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Easy Food - Unibrasil</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            primary: {
+              50: '#f5f0ff',
+              100: '#ede5ff',
+              200: '#dcceff',
+              300: '#c4a8ff',
+              400: '#a76bf5',
+              500: '#7B2CBF',
+              600: '#6a1fa3',
+              700: '#591888',
+              800: '#48126e',
+              900: '#380c54',
+              950: '#2a0845'
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="style.css">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+</head>
+<body class="bg-gray-50 dark:bg-gray-950 text-gray-800 dark:text-gray-100 font-['Inter'] transition-colors duration-300">
+
+  <header class="fixed top-0 left-0 right-0 z-50 bg-primary-500 dark:bg-primary-900 shadow-lg">
+    <div class="max-w-7xl mx-auto px-4 h-16 flex items-center justify-between">
+ 
+      <div class="flex items-center gap-3 cursor-pointer" onclick="switchView('home')">
+        <div class="w-10 h-10 bg-white rounded-xl flex items-center justify-center shadow-md">
+          <span class="text-primary-500 font-black text-xl">C</span>
+        </div>
+        <div class="hidden sm:block">
+          <h1 class="text-white font-bold text-lg leading-tight">Easy Food</h1>
+          <p class="text-primary-200 text-xs">Centro Universitario Unibrasil</p>
+        </div>
+      </div>
+
+      <nav class="hidden md:flex items-center gap-1">
+        <button onclick="switchView('home')" class="nav-btn" data-view="home">
+          <i data-lucide="home" class="w-4 h-4"></i> Início
+        </button>
+        <button onclick="switchView('menu')" class="nav-btn" data-view="menu">
+          <i data-lucide="utensils" class="w-4 h-4"></i> Cardápio
+        </button>
+        <button onclick="switchView('admin')" class="nav-btn" data-view="admin">
+          <i data-lucide="settings" class="w-4 h-4"></i> Admin
+        </button>
+      </nav>
+
+      <div class="flex items-center gap-2">
+        <button onclick="toggleTheme()" class="w-10 h-10 rounded-xl bg-white/20 hover:bg-white/30 text-white flex items-center justify-center transition-all" title="Alternar tema">
+          <i data-lucide="moon" class="w-5 h-5 dark:hidden"></i>
+          <i data-lucide="sun" class="w-5 h-5 hidden dark:block"></i>
+        </button>
+        <button onclick="toggleCart()" class="relative w-10 h-10 rounded-xl bg-white/20 hover:bg-white/30 text-white flex items-center justify-center transition-all" title="Carrinho">
+          <i data-lucide="shopping-cart" class="w-5 h-5"></i>
+          <span id="cart-badge" class="absolute -top-1 -right-1 w-5 h-5 bg-red-500 text-white text-xs font-bold rounded-full flex items-center justify-center hidden">0</span>
+        </button>
+        <button onclick="toggleSidebar()" class="md:hidden w-10 h-10 rounded-xl bg-white/20 hover:bg-white/30 text-white flex items-center justify-center transition-all">
+          <i data-lucide="menu" class="w-5 h-5"></i>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <div id="sidebar-overlay" class="fixed inset-0 bg-black/50 z-50 hidden opacity-0 transition-opacity duration-300" onclick="toggleSidebar()"></div>
+  <aside id="sidebar" class="fixed top-0 left-0 bottom-0 w-72 bg-white dark:bg-gray-900 z-50 shadow-2xl transform -translate-x-full transition-transform duration-300">
+    <div class="p-6">
+      <div class="flex items-center justify-between mb-8">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 bg-primary-500 rounded-xl flex items-center justify-center">
+            <span class="text-white font-black text-xl">C</span>
+          </div>
+          <span class="font-bold text-lg dark:text-white">Cantina</span>
+        </div>
+        <button onclick="toggleSidebar()" class="w-8 h-8 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 flex items-center justify-center">
+          <i data-lucide="x" class="w-5 h-5"></i>
+        </button>
+      </div>
+      <nav class="flex flex-col gap-2">
+        <button onclick="switchView('home'); toggleSidebar();" class="sidebar-btn" data-view="home">
+          <i data-lucide="home" class="w-5 h-5"></i> Início
+        </button>
+        <button onclick="switchView('menu'); toggleSidebar();" class="sidebar-btn" data-view="menu">
+          <i data-lucide="utensils" class="w-5 h-5"></i> Cardápio
+        </button>
+        <button onclick="switchView('checkout'); toggleSidebar();" class="sidebar-btn" data-view="checkout">
+          <i data-lucide="credit-card" class="w-5 h-5"></i> Checkout
+        </button>
+        <button onclick="switchView('admin'); toggleSidebar();" class="sidebar-btn" data-view="admin">
+          <i data-lucide="settings" class="w-5 h-5"></i> Administração
+        </button>
+        <hr class="my-3 dark:border-gray-700">
+        <button onclick="toggleTheme(); toggleSidebar();" class="sidebar-btn">
+          <i data-lucide="moon" class="w-5 h-5 dark:hidden"></i>
+          <i data-lucide="sun" class="w-5 h-5 hidden dark:block"></i>
+          <span class="dark:hidden">Modo Escuro</span>
+          <span class="hidden dark:inline">Modo Claro</span>
+        </button>
+      </nav>
+    </div>
+  </aside>
+
+  <main class="pt-16 pb-20 md:pb-8 min-h-screen">
+
+    <!-- HOME VIEW -->
+    <section id="view-home" class="view-section">
+
+      <div class="relative overflow-hidden bg-gradient-to-br from-primary-600 via-primary-500 to-primary-400 dark:from-primary-900 dark:via-primary-800 dark:to-primary-700">
+        <div class="absolute inset-0 opacity-10">
+          <div class="absolute top-10 left-10 w-40 h-40 bg-white rounded-full blur-3xl"></div>
+          <div class="absolute bottom-10 right-10 w-60 h-60 bg-primary-300 rounded-full blur-3xl"></div>
+        </div>
+        <div class="relative max-w-7xl mx-auto px-4 py-12 md:py-20">
+          <div class="flex flex-col md:flex-row items-center gap-8">
+            <div class="flex-1 text-center md:text-left">
+              <span class="inline-block bg-white/20 text-white text-sm font-semibold px-4 py-1.5 rounded-full mb-4 backdrop-blur-sm">🔥 Promoção da Semana</span>
+              <h2 class="text-3xl md:text-5xl font-black text-white mb-4 leading-tight">
+                Cantina <span class="text-yellow-300">Unibrasil</span><br>a melhor <span class="text-yellow-300">de Curitiba</span>
+              </h2>
+              <p class="text-primary-100 text-lg mb-6 max-w-lg"></p>
+              <button onclick="switchView('menu')" class="bg-white text-primary-600 font-bold px-8 py-3.5 rounded-2xl shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-200">
+                Ver Cardápio Completo
+              </button>
+            </div>
+            <div class="flex-shrink-0">
+              <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSdWXXIjXci4SbF6hg14dBfiLq3MnXtcyznPo49AzEdBw&s=10" alt="Promoção Combo" class="w-64 h-48 md:w-80 md:h-60 object-cover rounded-3xl shadow-2xl border-4 border-white/20">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="max-w-2xl mx-auto px-4 -mt-6 relative z-10">
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-xl flex items-center px-4 py-2 border border-gray-100 dark:border-gray-700">
+          <i data-lucide="search" class="w-5 h-5 text-gray-400 flex-shrink-0"></i>
+          <input type="text" id="home-search" placeholder="Buscar produtos..." class="flex-1 px-3 py-2 bg-transparent outline-none text-gray-700 dark:text-gray-200 placeholder-gray-400" oninput="handleSearch(this.value)">
+          <button onclick="handleSearch(''); document.getElementById('home-search').value='';" class="text-gray-400 hover:text-primary-500 transition-colors p-1">
+            <i data-lucide="x" class="w-4 h-4"></i>
+          </button>
+        </div>
+      </div>
+
+      <div class="max-w-7xl mx-auto px-4 mt-8">
+        <h3 class="text-xl font-bold mb-4 dark:text-white">Categorias</h3>
+        <div class="flex gap-3 overflow-x-auto pb-2 scrollbar-hide" id="category-pills">
+          <button onclick="filterCategory('todos')" class="category-pill active" data-cat="todos">
+            <span>🍽️</span> Todos
+          </button>
+          <button onclick="filterCategory('salgados')" class="category-pill" data-cat="salgados">
+            <span>🥟</span> Salgados
+          </button>
+          <button onclick="filterCategory('doces')" class="category-pill" data-cat="doces">
+            <span>🍰</span> Doces
+          </button>
+          <button onclick="filterCategory('bebidas')" class="category-pill" data-cat="bebidas">
+            <span>🥤</span> Bebidas
+          </button>
+          <button onclick="filterCategory('combos')" class="category-pill" data-cat="combos">
+            <span>🎉</span> Combos
+          </button>
+        </div>
+      </div>
+
+      <div class="max-w-7xl mx-auto px-4 mt-8">
+        <div id="home-products" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
+        </div>
+        <div id="home-empty" class="hidden text-center py-16">
+          <i data-lucide="search-x" class="w-16 h-16 text-gray-300 dark:text-gray-600 mx-auto mb-4"></i>
+          <p class="text-gray-400 dark:text-gray-500 text-lg">Nenhum produto encontrado</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="view-menu" class="view-section hidden">
+      <div class="max-w-7xl mx-auto px-4 py-6">
+        <h2 class="text-2xl md:text-3xl font-black mb-6 dark:text-white">🍔 Cardápio Completo</h2>
+        
+        <div class="flex flex-col sm:flex-row gap-4 mb-6">
+          <div class="flex-1 bg-white dark:bg-gray-800 rounded-xl shadow-md flex items-center px-4 py-2 border border-gray-100 dark:border-gray-700">
+            <i data-lucide="search" class="w-5 h-5 text-gray-400 flex-shrink-0"></i>
+            <input type="text" id="menu-search" placeholder="Buscar no cardápio..." class="flex-1 px-3 py-2 bg-transparent outline-none text-gray-700 dark:text-gray-200 placeholder-gray-400" oninput="handleSearch(this.value)">
+          </div>
+          <div class="flex gap-2 overflow-x-auto scrollbar-hide" id="menu-category-pills">
+            <button onclick="filterCategory('todos')" class="category-pill-sm active" data-cat="todos">Todos</button>
+            <button onclick="filterCategory('salgados')" class="category-pill-sm" data-cat="salgados">🥟 Salgados</button>
+            <button onclick="filterCategory('doces')" class="category-pill-sm" data-cat="doces">🍰 Doces</button>
+            <button onclick="filterCategory('bebidas')" class="category-pill-sm" data-cat="bebidas">🥤 Bebidas</button>
+            <button onclick="filterCategory('combos')" class="category-pill-sm" data-cat="combos">🎉 Combos</button>
+          </div>
+        </div>
+
+        <div id="menu-products" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
+
+        </div>
+        <div id="menu-empty" class="hidden text-center py-16">
+          <i data-lucide="search-x" class="w-16 h-16 text-gray-300 dark:text-gray-600 mx-auto mb-4"></i>
+          <p class="text-gray-400 dark:text-gray-500 text-lg">Nenhum produto encontrado</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="view-checkout" class="view-section hidden">
+      <div class="max-w-2xl mx-auto px-4 py-6">
+        <h2 class="text-2xl md:text-3xl font-black mb-6 dark:text-white">📋 Finalizar Pedido</h2>
+
+        <div id="checkout-items" class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-5 mb-5 border border-gray-100 dark:border-gray-700">
+          <h3 class="font-bold text-lg mb-4 dark:text-white flex items-center gap-2">
+            <i data-lucide="shopping-bag" class="w-5 h-5 text-primary-500"></i> Resumo do Pedido
+          </h3>
+          <div id="checkout-items-list"></div>
+          <div class="border-t dark:border-gray-700 mt-4 pt-4 flex justify-between items-center">
+            <span class="font-bold text-lg dark:text-white">Total</span>
+            <span id="checkout-total" class="font-black text-2xl text-primary-500">R$ 0,00</span>
+          </div>
+          <div id="checkout-empty-cart" class="text-center py-8 hidden">
+            <i data-lucide="shopping-cart" class="w-12 h-12 text-gray-300 dark:text-gray-600 mx-auto mb-3"></i>
+            <p class="text-gray-400">Seu carrinho está vazio</p>
+            <button onclick="switchView('menu')" class="mt-3 text-primary-500 font-semibold hover:underline">Ver cardápio</button>
+          </div>
+        </div>
+
+        <div id="checkout-form-section" class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-5 mb-5 border border-gray-100 dark:border-gray-700">
+          <h3 class="font-bold text-lg mb-4 dark:text-white flex items-center gap-2">
+            <i data-lucide="user" class="w-5 h-5 text-primary-500"></i> Dados do Aluno
+          </h3>
+          <div class="space-y-4">
+            <div>
+              <label class="block text-sm font-semibold mb-1.5 dark:text-gray-300">Nome Completo *</label>
+              <input type="text" id="student-name" placeholder="Seu nome completo" class="input-field" required>
+            </div>
+            <div class="grid grid-cols-2 gap-4">
+              <div>
+                <label class="block text-sm font-semibold mb-1.5 dark:text-gray-300">RA / Matrícula *</label>
+                <input type="text" id="student-ra" placeholder="Ex: 2024001" class="input-field" required>
+              </div>
+              <div>
+                <label class="block text-sm font-semibold mb-1.5 dark:text-gray-300">Curso *</label>
+                <select id="student-course" class="input-field" required>
+                  <option value="">Selecione</option>
+                  <option>Análise e Desenv. de Sistemas</option>
+                  <option>Ciência da Computação</option>
+                  <option>Engenharia de Software</option>
+                  <option>Sistemas de Informação</option>
+                  <option>Administração</option>
+                  <option>Contabilidade</option>
+                  <option>Direito</option>
+                  <option>Engenharia Civil</option>
+                  <option>Engenharia Elétrica</option>
+                  <option>Medicina</option>
+                  <option>Enfermagem</option>
+                  <option>Psicologia</option>
+                  <option>Design Gráfico</option>
+                  <option>Publicidade e Propaganda</option>
+                  <option>Fisioterapia</option>
+                  <option>Outro</option>
+                </select>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div id="payment-section" class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-5 mb-5 border border-gray-100 dark:border-gray-700">
+          <h3 class="font-bold text-lg mb-4 dark:text-white flex items-center gap-2">
+            <i data-lucide="wallet" class="w-5 h-5 text-primary-500"></i> Forma de Pagamento
+          </h3>
+          <div class="grid grid-cols-3 gap-3">
+            <label class="payment-option">
+              <input type="radio" name="payment" value="pix" checked class="hidden peer">
+              <div class="payment-card peer-checked:border-primary-500 peer-checked:bg-primary-50 dark:peer-checked:bg-primary-900/30">
+                <i data-lucide="qr-code" class="w-6 h-6 mb-1 text-primary-500"></i>
+                <span class="font-semibold text-sm">PIX</span>
+              </div>
+            </label>
+            <label class="payment-option">
+              <input type="radio" name="payment" value="cartao" class="hidden peer">
+              <div class="payment-card peer-checked:border-primary-500 peer-checked:bg-primary-50 dark:peer-checked:bg-primary-900/30">
+                <i data-lucide="credit-card" class="w-6 h-6 mb-1 text-primary-500"></i>
+                <span class="font-semibold text-sm">Cartão</span>
+              </div>
+            </label>
+            <label class="payment-option">
+              <input type="radio" name="payment" value="dinheiro" class="hidden peer">
+              <div class="payment-card peer-checked:border-primary-500 peer-checked:bg-primary-50 dark:peer-checked:bg-primary-900/30">
+                <i data-lucide="banknote" class="w-6 h-6 mb-1 text-primary-500"></i>
+                <span class="font-semibold text-sm">Dinheiro</span>
+              </div>
+            </label>
+          </div>
+        </div>
+
+        <div id="pickup-section" class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg p-5 mb-5 border border-gray-100 dark:border-gray-700">
+          <h3 class="font-bold text-lg mb-4 dark:text-white flex items-center gap-2">
+            <i data-lucide="clock" class="w-5 h-5 text-primary-500"></i> Horário de Retirada
+          </h3>
+          <div class="grid grid-cols-3 sm:grid-cols-4 md:grid-cols-6 gap-2" id="pickup-times"></div>
+        </div>
+
+        <button onclick="finalizeOrder()" class="w-full bg-primary-500 hover:bg-primary-600 text-white font-bold text-lg py-4 rounded-2xl shadow-lg hover:shadow-xl transition-all duration-200 flex items-center justify-center gap-2 active:scale-[0.98]">
+          <i data-lucide="check-circle" class="w-6 h-6"></i>
+          Finalizar Pedido
+        </button>
+      </div>
+    </section>
+
+    <section id="view-admin" class="view-section hidden">
+      <div class="max-w-6xl mx-auto px-4 py-6">
+        <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between mb-6 gap-3">
+          <h2 class="text-2xl md:text-3xl font-black dark:text-white">⚙️ Administração</h2>
+          <button onclick="openProductForm()" class="bg-primary-500 hover:bg-primary-600 text-white font-semibold px-5 py-2.5 rounded-xl shadow-md hover:shadow-lg transition-all flex items-center gap-2">
+            <i data-lucide="plus" class="w-5 h-5"></i> Novo Produto
+          </button>
+        </div>
+
+        
+        <div id="product-form-modal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+          <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto">
+            <div class="p-6">
+              <div class="flex items-center justify-between mb-6">
+                <h3 id="form-title" class="text-xl font-bold dark:text-white">Novo Produto</h3>
+                <button onclick="closeProductForm()" class="w-8 h-8 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-700 flex items-center justify-center transition-colors">
+                  <i data-lucide="x" class="w-5 h-5"></i>
+                </button>
+              </div>
+              <form id="product-form" class="space-y-4" onsubmit="saveProduct(event)">
+                <input type="hidden" id="product-id">
+                <div>
+                  <label class="block text-sm font-semibold mb-1.5 dark:text-gray-300">Nome *</label>
+                  <input type="text" id="product-name" class="input-field" required placeholder="Ex: Coxinha de Frango">
+                </div>
+                <div>
+                  <label class="block text-sm font-semibold mb-1.5 dark:text-gray-300">Descrição</label>
+                  <textarea id="product-desc" rows="2" class="input-field resize-none" placeholder="Descrição do produto"></textarea>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                  <div>
+                    <label class="block text-sm font-semibold mb-1.5 dark:text-gray-300">Preço (R$) *</label>
+                    <input type="number" id="product-price" step="0.01" min="0" class="input-field" required placeholder="0.00">
+                  </div>
+                  <div>
+                    <label class="block text-sm font-semibold mb-1.5 dark:text-gray-300">Categoria *</label>
+                    <select id="product-cat" class="input-field" required>
+                      <option value="">Selecione</option>
+                      <option value="salgados">Salgados</option>
+                      <option value="doces">Doces</option>
+                      <option value="bebidas">Bebidas</option>
+                      <option value="combos">Combos</option>
+                    </select>
+                  </div>
+                </div>
+                <div>
+                  <label class="block text-sm font-semibold mb-1.5 dark:text-gray-300">URL da Imagem</label>
+                  <input type="url" id="product-img" class="input-field" placeholder="https://... ou deixe vazio para padrão">
+                </div>
+                <button type="submit" class="w-full bg-primary-500 hover:bg-primary-600 text-white font-bold py-3 rounded-xl shadow-md transition-all">
+                  Salvar Produto
+                </button>
+              </form>
+            </div>
+          </div>
+        </div>
+
+        
+        <div class="bg-white dark:bg-gray-800 rounded-2xl shadow-lg border border-gray-100 dark:border-gray-700 overflow-hidden">
+          <div class="overflow-x-auto">
+            <table class="w-full">
+              <thead class="bg-gray-50 dark:bg-gray-750 dark:bg-gray-900/50">
+                <tr>
+                  <th class="text-left px-5 py-3 text-sm font-semibold text-gray-500 dark:text-gray-400">Produto</th>
+                  <th class="text-left px-5 py-3 text-sm font-semibold text-gray-500 dark:text-gray-400 hidden sm:table-cell">Categoria</th>
+                  <th class="text-right px-5 py-3 text-sm font-semibold text-gray-500 dark:text-gray-400">Preço</th>
+                  <th class="text-center px-5 py-3 text-sm font-semibold text-gray-500 dark:text-gray-400">Ações</th>
+                </tr>
+              </thead>
+              <tbody id="admin-products-list" class="divide-y divide-gray-100 dark:divide-gray-700">
+                
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </div>
+    </section>
+  </main>
+
+  <div id="cart-overlay" class="fixed inset-0 bg-black/50 z-40 hidden opacity-0 transition-opacity duration-300" onclick="toggleCart()"></div>
+  <aside id="cart-panel" class="fixed top-0 right-0 bottom-0 w-full sm:w-96 bg-white dark:bg-gray-900 z-40 shadow-2xl transform translate-x-full transition-transform duration-300 flex flex-col">
+    <div class="p-4 bg-primary-500 dark:bg-primary-900 text-white flex items-center justify-between">
+      <h2 class="font-bold text-lg flex items-center gap-2">
+        <i data-lucide="shopping-cart" class="w-5 h-5"></i> Carrinho
+      </h2>
+      <button onclick="toggleCart()" class="w-8 h-8 rounded-lg bg-white/20 hover:bg-white/30 flex items-center justify-center transition-colors">
+        <i data-lucide="x" class="w-5 h-5"></i>
+      </button>
+    </div>
+    <div id="cart-items" class="flex-1 overflow-y-auto p-4 space-y-3"></div>
+    <div id="cart-empty" class="flex-1 flex flex-col items-center justify-center p-8">
+      <i data-lucide="shopping-bag" class="w-16 h-16 text-gray-200 dark:text-gray-700 mb-4"></i>
+      <p class="text-gray-400 dark:text-gray-500 font-semibold">Carrinho vazio</p>
+      <p class="text-gray-300 dark:text-gray-600 text-sm mt-1">Adicione itens do cardápio</p>
+    </div>
+    <div id="cart-footer" class="hidden border-t dark:border-gray-700 p-4 bg-gray-50 dark:bg-gray-800/50">
+      <div class="flex justify-between text-sm text-gray-500 dark:text-gray-400 mb-1">
+        <span>Subtotal</span><span id="cart-subtotal">R$ 0,00</span>
+      </div>
+      <div class="flex justify-between font-bold text-lg dark:text-white mb-4">
+        <span>Total</span><span id="cart-total" class="text-primary-500">R$ 0,00</span>
+      </div>
+      <button onclick="goToCheckout()" class="w-full bg-primary-500 hover:bg-primary-600 text-white font-bold py-3.5 rounded-xl shadow-md hover:shadow-lg transition-all flex items-center justify-center gap-2">
+        <i data-lucide="arrow-right" class="w-5 h-5"></i> Finalizar Pedido
+      </button>
+    </div>
+  </aside>
+
+  <div id="receipt-modal" class="hidden fixed inset-0 bg-black/60 z-50 flex items-center justify-center p-4 overflow-y-auto">
+    <div class="bg-white dark:bg-gray-800 rounded-3xl shadow-2xl w-full max-w-md mx-auto my-8">
+      <div class="p-6 text-center">
+        <div class="w-20 h-20 bg-green-100 dark:bg-green-900/30 rounded-full mx-auto mb-4 flex items-center justify-center">
+          <i data-lucide="check-circle-2" class="w-10 h-10 text-green-500"></i>
+        </div>
+        <h2 class="text-2xl font-black dark:text-white mb-1">Pedido Confirmado!</h2>
+        <p class="text-gray-400 dark:text-gray-500">Seu pedido foi realizado com sucesso</p>
+      </div>
+
+      <!-- Receipt -->
+      <div class="mx-6 mb-6 bg-gray-50 dark:bg-gray-900 rounded-2xl border-2 border-dashed border-gray-300 dark:border-gray-600 p-5">
+        <div class="text-center mb-4">
+          <p class="text-xs text-gray-400 uppercase tracking-widest">Easy Food</p>
+          <p id="receipt-order-number" class="text-2xl font-black text-primary-500">#000000</p>
+          <p id="receipt-date" class="text-sm text-gray-400"></p>
+        </div>
+
+        <div class="border-t border-dashed border-gray-200 dark:border-gray-700 my-3"></div>
+
+        <div class="space-y-1 text-sm mb-3">
+          <div class="flex justify-between"><span class="text-gray-400">Aluno:</span><span id="receipt-name" class="font-semibold dark:text-white text-right max-w-[60%] truncate"></span></div>
+          <div class="flex justify-between"><span class="text-gray-400">RA:</span><span id="receipt-ra" class="font-semibold dark:text-white"></span></div>
+          <div class="flex justify-between"><span class="text-gray-400">Curso:</span><span id="receipt-course" class="font-semibold dark:text-white text-right max-w-[60%] truncate"></span></div>
+        </div>
+
+        <div class="border-t border-dashed border-gray-200 dark:border-gray-700 my-3"></div>
+
+        <div id="receipt-items" class="space-y-2 text-sm"></div>
+
+        <div class="border-t border-dashed border-gray-200 dark:border-gray-700 my-3"></div>
+
+        <div class="flex justify-between font-bold text-lg dark:text-white mb-2">
+          <span>Total</span><span id="receipt-total" class="text-primary-500"></span>
+        </div>
+
+        <div class="border-t border-dashed border-gray-200 dark:border-gray-700 my-3"></div>
+
+        <div class="space-y-1 text-sm">
+          <div class="flex justify-between"><span class="text-gray-400">Pagamento:</span><span id="receipt-payment" class="font-semibold dark:text-white"></span></div>
+          <div class="flex justify-between"><span class="text-gray-400">Retirada:</span><span id="receipt-pickup" class="font-semibold dark:text-white"></span></div>
+        </div>
+
+        <!-- PIX QR Code -->
+        <div id="receipt-qr-section" class="mt-4 text-center">
+          <div class="border-t border-dashed border-gray-200 dark:border-gray-700 my-3"></div>
+          <p class="text-xs text-gray-400 mb-3">Escaneie o QR Code para pagar via PIX</p>
+          <div class="inline-block bg-white p-3 rounded-xl shadow-sm">
+            <img id="receipt-qr-code" src="" alt="QR Code PIX" class="w-40 h-40">
+          </div>
+          <p class="text-xs text-gray-400 mt-2 break-all px-2" id="receipt-pix-key"></p>
+        </div>
+      </div>
+
+      <div class="px-6 pb-6">
+        <button onclick="closeReceipt()" class="w-full bg-primary-500 hover:bg-primary-600 text-white font-bold py-3.5 rounded-xl shadow-md transition-all">
+          Fechar
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <div id="toast-container" class="fixed top-20 right-4 z-50 space-y-2 pointer-events-none"></div>
+
+  <nav class="md:hidden fixed bottom-0 left-0 right-0 bg-white dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 z-30 shadow-lg">
+    <div class="flex items-center justify-around py-2">
+      <button onclick="switchView('home')" class="mobile-nav-btn active" data-view="home">
+        <i data-lucide="home" class="w-5 h-5"></i>
+        <span>Início</span>
+      </button>
+      <button onclick="switchView('menu')" class="mobile-nav-btn" data-view="menu">
+        <i data-lucide="utensils" class="w-5 h-5"></i>
+        <span>Cardápio</span>
+      </button>
+      <button onclick="toggleCart()" class="mobile-nav-btn relative">
+        <i data-lucide="shopping-cart" class="w-5 h-5"></i>
+        <span>Carrinho</span>
+        <span id="cart-badge-mobile" class="absolute -top-1 right-1/2 translate-x-5 w-4 h-4 bg-red-500 text-white text-[10px] font-bold rounded-full flex items-center justify-center hidden">0</span>
+      </button>
+      <button onclick="switchView('admin')" class="mobile-nav-btn" data-view="admin">
+        <i data-lucide="settings" class="w-5 h-5"></i>
+        <span>Admin</span>
+      </button>
+    </div>
+  </nav>
+
+  <script src="https://unpkg.com/lucide@latest"></script>
+  <script src="script.js"></script>
+</body>
+</html>
